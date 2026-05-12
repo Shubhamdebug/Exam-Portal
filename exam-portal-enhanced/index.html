@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExamPortal – Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --navy:       #0D1B2A;
+      --navy2:      #1B2E45;
+      --blue:       #2563EB;
+      --blue-lt:    #3B82F6;
+      --blue-dk:    #1D4ED8;
+      --sky:        #EFF6FF;
+      --success:    #059669;
+      --danger:     #DC2626;
+      --text:       #0F172A;
+      --muted:      #64748B;
+      --border:     #CBD5E1;
+      --card:       #FFFFFF;
+      --bg:         #F0F5FF;
+      --student:    #2563EB;
+      --student-lt: #EFF6FF;
+      --student-bd: #BFDBFE;
+      --admin:      #7C3AED;
+      --admin-lt:   #F5F3FF;
+      --admin-bd:   #DDD6FE;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ════ LEFT PANEL ════ */
+    .left-panel {
+      width: 45%;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      padding: 4rem 3.5rem;
+      position: relative; overflow: hidden;
+      transition: background 0.5s;
+    }
+    .left-panel::before {
+      content: ''; position: absolute;
+      width: 420px; height: 420px; border-radius: 50%;
+      border: 60px solid rgba(37,99,235,0.12);
+      top: -110px; right: -110px;
+      transition: border-color 0.5s;
+    }
+    .left-panel::after {
+      content: ''; position: absolute;
+      width: 260px; height: 260px; border-radius: 50%;
+      border: 40px solid rgba(59,130,246,0.10);
+      bottom: 60px; left: -80px;
+      transition: border-color 0.5s;
+    }
+    .left-panel.role-admin           { background: #1A0D2E; }
+    .left-panel.role-admin::before   { border-color: rgba(124,58,237,0.2); }
+    .left-panel.role-admin::after    { border-color: rgba(124,58,237,0.12); }
+
+    .brand {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 3rem;
+    }
+    .brand-icon {
+      width: 48px; height: 48px; background: var(--blue);
+      border-radius: 12px; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.5rem; transition: background 0.4s;
+    }
+    .role-admin .brand-icon { background: #7C3AED; }
+    .brand-name {
+      font-family: 'Outfit', sans-serif; font-size: 1.5rem;
+      font-weight: 700; color: #fff; letter-spacing: -0.02em;
+    }
+    .brand-name span { color: var(--blue-lt); transition: color 0.4s; }
+    .role-admin .brand-name span { color: #C4B5FD; }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif; font-size: 2.5rem;
+      font-weight: 800; color: #fff; line-height: 1.2;
+      letter-spacing: -0.02em; margin-bottom: 1.2rem;
+    }
+    .hero-title span { color: var(--blue-lt); transition: color 0.4s; }
+    .role-admin .hero-title span { color: #C4B5FD; }
+
+    .hero-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.55);
+      line-height: 1.7; max-width: 340px; margin-bottom: 3rem;
+    }
+    .feature-list { display: flex; flex-direction: column; gap: 1rem; }
+    .feature-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.9rem; color: rgba(255,255,255,0.7);
+    }
+    .feature-dot {
+      width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(37,99,235,0.25); border: 1px solid rgba(37,99,235,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; transition: background 0.4s, border-color 0.4s;
+    }
+    .role-admin .feature-dot {
+      background: rgba(124,58,237,0.25);
+      border-color: rgba(124,58,237,0.4);
+    }
+
+    .left-role-badge {
+      display: none; align-items: center; gap: 0.6rem;
+      margin-top: 2.5rem; padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px; font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+    }
+    .left-role-badge.visible { display: flex; }
+    .left-role-badge strong { color: #fff; }
+
+    /* ════ RIGHT PANEL — animation stage ════ */
+    .right-panel {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; padding: 2rem;
+      overflow-y: auto; position: relative;
+    }
+
+    .step {
+      width: 100%; max-width: 460px;
+      position: absolute;
+      transition: opacity 0.35s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .step.hidden-left  { opacity: 0; transform: translateX(-44px); pointer-events: none; }
+    .step.hidden-right { opacity: 0; transform: translateX(44px);  pointer-events: none; }
+    .step.visible      { opacity: 1; transform: translateX(0);      pointer-events: all; }
+
+    .step-heading {
+      font-family: 'Outfit', sans-serif; font-size: 1.75rem;
+      font-weight: 700; color: var(--text);
+      letter-spacing: -0.02em; margin-bottom: 0.35rem;
+    }
+    .step-sub { font-size: 0.9rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.6; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: none; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+      color: var(--muted); margin-bottom: 1.5rem;
+      padding: 0.3rem 0; transition: color 0.18s;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* ════ STEP 1 — Role cards ════ */
+    .role-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .role-card {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.85rem; padding: 2rem 1.25rem 1.75rem;
+      border-radius: 16px; border: 2px solid var(--border);
+      background: var(--card); cursor: pointer;
+      transition: border-color 0.22s, box-shadow 0.22s, transform 0.18s;
+      position: relative; overflow: hidden;
+    }
+    .role-card::before {
+      content: ''; position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .role-card:hover  { transform: translateY(-3px); }
+    .role-card.student:hover { border-color: var(--student); box-shadow: 0 8px 28px rgba(37,99,235,0.15); }
+    .role-card.admin:hover   { border-color: var(--admin);   box-shadow: 0 8px 28px rgba(124,58,237,0.15); }
+    .role-card.student::before { background: var(--student-lt); }
+    .role-card.admin::before   { background: var(--admin-lt); }
+    .role-card:hover::before { opacity: 1; }
+
+    .role-icon-wrap {
+      width: 68px; height: 68px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; position: relative; z-index: 1;
+      transition: box-shadow 0.22s;
+    }
+    .role-card.student .role-icon-wrap { background: var(--student-lt); border: 2px solid var(--student-bd); }
+    .role-card.admin   .role-icon-wrap { background: var(--admin-lt);   border: 2px solid var(--admin-bd); }
+    .role-card.student:hover .role-icon-wrap { box-shadow: 0 4px 16px rgba(37,99,235,0.25); }
+    .role-card.admin:hover   .role-icon-wrap { box-shadow: 0 4px 16px rgba(124,58,237,0.25); }
+
+    .role-label {
+      font-family: 'Outfit', sans-serif; font-size: 1.05rem;
+      font-weight: 700; color: var(--text);
+      position: relative; z-index: 1;
+    }
+    .role-desc {
+      font-size: 0.76rem; color: var(--muted);
+      text-align: center; line-height: 1.5;
+      position: relative; z-index: 1;
+    }
+    .role-arrow {
+      position: absolute; right: 0.9rem; top: 0.9rem;
+      font-size: 0.85rem; color: var(--muted);
+      opacity: 0; transition: opacity 0.2s, transform 0.2s;
+    }
+    .role-card:hover .role-arrow { opacity: 1; transform: translateX(2px); }
+
+    .step-divider {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin: 0.25rem 0 1.5rem; color: var(--muted); font-size: 0.8rem;
+    }
+    .step-divider::before, .step-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .demo-hint {
+      padding: 0.9rem 1rem; background: var(--sky);
+      border-radius: 10px; font-size: 0.8rem;
+      color: var(--blue); border: 1px solid #BFDBFE;
+    }
+    .demo-hint strong { display: block; margin-bottom: 0.3rem; color: var(--navy); }
+    .demo-hint code {
+      background: rgba(37,99,235,0.08); padding: 1px 5px;
+      border-radius: 4px; font-family: 'Courier New', monospace;
+    }
+
+    /* ════ STEP 2 — Action cards ════ */
+    .role-banner {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.1rem 1.25rem; border-radius: 14px;
+      margin-bottom: 1.75rem; border: 2px solid;
+    }
+    .role-banner.student { background: var(--student-lt); border-color: var(--student-bd); }
+    .role-banner.admin   { background: var(--admin-lt);   border-color: var(--admin-bd); }
+    .role-banner-icon { font-size: 2rem; flex-shrink: 0; }
+    .role-banner-text strong {
+      font-family: 'Outfit', sans-serif; font-size: 1rem;
+      font-weight: 700; color: var(--text);
+    }
+    .role-banner-text p { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+
+    .action-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .action-card {
+      padding: 1.6rem 1.25rem; border-radius: 14px;
+      border: 2px solid var(--border); background: var(--card);
+      cursor: pointer; text-align: left;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .action-card:hover { transform: translateY(-2px); }
+    .action-card.signin-card:hover   { border-color: var(--blue);    box-shadow: 0 6px 20px rgba(37,99,235,0.14); }
+    .action-card.register-card:hover { border-color: var(--success);  box-shadow: 0 6px 20px rgba(5,150,105,0.14); }
+    .action-card-icon { font-size: 1.6rem; }
+    .action-card-title {
+      font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: var(--text);
+    }
+    .action-card-sub { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+    .action-card-cta {
+      margin-top: 0.4rem; font-size: 0.78rem;
+      font-weight: 700; display: flex; align-items: center; gap: 0.3rem;
+    }
+    .signin-card   .action-card-cta { color: var(--blue); }
+    .register-card .action-card-cta { color: var(--success); }
+
+    /* ════ STEP 3 — Auth form ════ */
+    .role-pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.3rem 0.75rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700;
+      margin-bottom: 1rem; font-family: 'Outfit', sans-serif;
+      border: 1px solid;
+    }
+    .role-pill.student { background: var(--student-lt); color: var(--student); border-color: var(--student-bd); }
+    .role-pill.admin   { background: var(--admin-lt);   color: var(--admin);   border-color: var(--admin-bd); }
+
+    .form-group { margin-bottom: 1.25rem; }
+    label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--text); margin-bottom: 0.45rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      color: var(--text); background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+    }
+    input:focus           { border-color: var(--blue);  box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .admin-form input:focus { border-color: var(--admin); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+
+    .pwd-wrapper { position: relative; }
+    .pwd-toggle {
+      position: absolute; right: 0.9rem; top: 50%;
+      transform: translateY(-50%); background: none;
+      border: none; cursor: pointer; color: var(--muted);
+      font-size: 1rem; padding: 0.2rem;
+    }
+
+    .btn-primary {
+      width: 100%; padding: 0.85rem; border: none;
+      border-radius: 10px; font-family: 'Outfit', sans-serif;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      margin-top: 0.5rem; letter-spacing: 0.01em; color: #fff;
+    }
+    .btn-student       { background: var(--student); }
+    .btn-student:hover { background: var(--blue-dk); box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+    .btn-admin         { background: var(--admin); }
+    .btn-admin:hover   { background: #6D28D9; box-shadow: 0 4px 14px rgba(124,58,237,0.35); }
+    .btn-primary:active { transform: scale(0.99); }
+
+    .error-msg {
+      font-size: 0.82rem; color: var(--danger);
+      background: #FEF2F2; border: 1px solid #FECACA;
+      padding: 0.6rem 0.9rem; border-radius: 8px;
+      margin-top: 1rem; display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* ════ RESPONSIVE ════ */
+    @media (max-width: 768px) {
+      .left-panel { display: none; }
+      .right-panel { padding: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .role-cards, .action-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ LEFT PANEL ════ -->
+<div class="left-panel" id="left-panel">
+  <div class="brand">
+    <div class="brand-icon">📋</div>
+    <div class="brand-name">Exam<span>Portal</span></div>
+  </div>
+
+  <h1 class="hero-title">Your Exam.<br>Your <span>Results.</span><br>Instantly.</h1>
+  <p class="hero-sub">Smarter exams. Faster results. Secure experience.</p>
+
+  <div class="feature-list">
+    <div class="feature-item"><div class="feature-dot">⏱</div>Real-time countdown timer per exam</div>
+    <div class="feature-item"><div class="feature-dot">🔒</div>Anti-cheating tab-switch detection</div>
+    <div class="feature-item"><div class="feature-dot">📊</div>Instant results with detailed breakdown</div>
+    <div class="feature-item"><div class="feature-dot">⚙️</div>Admin panel to manage questions & exams</div>
+  </div>
+
+  <div class="left-role-badge" id="left-role-badge">
+    <span id="left-badge-icon">🎓</span>
+    Continuing as <strong id="left-badge-label">Student</strong>
+  </div>
+</div>
+
+<!-- ════ RIGHT PANEL — 3 animated steps ════ -->
+<div class="right-panel">
+
+  <!-- ══ STEP 1: Choose role ══ -->
+  <div class="step visible" id="step-role">
+    <h2 class="step-heading">Welcome 👋</h2>
+    <p class="step-sub">Choose how you'd like to access ExamPortal to get started.</p>
+
+    <div class="role-cards">
+      <button class="role-card student" onclick="selectRole('student')">
+        <span class="role-arrow">→</span>
+        <div class="role-icon-wrap">🎓</div>
+        <div class="role-label">Student</div>
+        <div class="role-desc">Take exams, view results &amp; track your progress</div>
+      </button>
+      <button class="role-card admin" onclick="selectRole('admin')">
+        <span class="role-arrow">→</span>
+        <div class="role-icon-wrap">🛡️</div>
+        <div class="role-label">Admin</div>
+        <div class="role-desc">Create exams, manage questions &amp; evaluate answers</div>
+      </button>
+    </div>
+
+    <div class="step-divider">demo credentials</div>
+    <div class="demo-hint">
+      <strong>🧪 Quick access</strong>
+      Student — <code>Shubham@student.com</code> / <code>Student@123</code><br/>
+      Admin &nbsp;— <code>admin@examportal.com</code> / <code>Admin@123</code>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2: Choose action ══ -->
+  <div class="step hidden-right" id="step-action">
+    <button class="back-btn" onclick="goBack('step-role','step-action')">← Back</button>
+
+    <div class="role-banner student" id="action-banner">
+      <div class="role-banner-icon" id="action-banner-icon">🎓</div>
+      <div class="role-banner-text">
+        <strong id="action-banner-title">Student Access</strong>
+        <p id="action-banner-desc">Sign in to your student account or create a new one.</p>
+      </div>
+    </div>
+
+    <h2 class="step-heading">What would you like to do?</h2>
+    <p class="step-sub">Select an option below to continue.</p>
+
+    <div class="action-cards">
+      <button class="action-card signin-card" onclick="selectAction('signin')">
+        <div class="action-card-icon">🔐</div>
+        <div class="action-card-title">Sign In</div>
+        <div class="action-card-sub">Already have an account? Log in to continue.</div>
+        <div class="action-card-cta">Sign In →</div>
+      </button>
+      <button class="action-card register-card" onclick="selectAction('register')">
+        <div class="action-card-icon">✨</div>
+        <div class="action-card-title">Create Account</div>
+        <div class="action-card-sub">New here? Register to get started in seconds.</div>
+        <div class="action-card-cta" style="color:var(--success)">Register →</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3: Auth form ══ -->
+  <div class="step hidden-right" id="step-form">
+    <button class="back-btn" onclick="goBack('step-action','step-form')">← Back</button>
+
+    <div class="role-pill student" id="form-role-pill">🎓 Student</div>
+    <h2 class="step-heading" id="form-heading">Welcome back 👋</h2>
+    <p class="step-sub"   id="form-sub">Sign in to access your exam dashboard.</p>
+
+    <!-- Sign In form -->
+    <form id="form-login" onsubmit="handleLogin(event)" novalidate>
+      <div class="form-group">
+        <label for="l-email">Email address</label>
+        <input type="email" id="l-email" autocomplete="email" required />
+      </div>
+      <div class="form-group">
+        <label for="l-password">Password</label>
+        <div class="pwd-wrapper">
+          <input type="password" id="l-password" autocomplete="current-password" required />
+          <button type="button" class="pwd-toggle" onclick="togglePwd('l-password',this)">👁</button>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary btn-student" id="btn-login">Sign In →</button>
+      <div class="error-msg" id="login-error"></div>
+    </form>
+
+    <!-- Register form -->
+    <form id="form-signup" onsubmit="handleSignup(event)" style="display:none" novalidate>
+      <div class="form-group">
+        <label for="s-name">Full name</label>
+        <input type="text" id="s-name" required />
+      </div>
+      <div class="form-group">
+        <label for="s-email">Email address</label>
+        <input type="email" id="s-email" autocomplete="email" required />
+      </div>
+      <div class="form-group">
+        <label for="s-password">Password <small style="text-transform:none;font-weight:400;color:var(--muted)">(min 6 chars)</small></label>
+        <div class="pwd-wrapper">
+          <input type="password" id="s-password" placeholder="••••••••" minlength="6" autocomplete="new-password" required />
+          <button type="button" class="pwd-toggle" onclick="togglePwd('s-password',this)">👁</button>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary btn-student" id="btn-signup">Create Account →</button>
+      <div class="error-msg" id="signup-error"></div>
+    </form>
+  </div>
+
+</div><!-- /.right-panel -->
+
+<script src="js/app.js"></script>
+<script>
+  // ── Redirect if already logged in ──
+  const existing = getCurrentUser();
+  if (existing) {
+    window.location.href = existing.role === "admin" ? "admin.html" : "dashboard.html";
+  }
+
+  // ── State ──
+  let currentRole   = null;   // "student" | "admin"
+  let currentAction = null;   // "signin"  | "register"
+
+  // ── Step transitions ──
+  function goTo(nextId, prevId) {
+    document.getElementById(prevId).classList.replace("visible",      "hidden-left");
+    document.getElementById(nextId).classList.replace("hidden-right", "visible");
+  }
+  function goBack(prevId, curId) {
+    document.getElementById(curId).classList.replace("visible",     "hidden-right");
+    document.getElementById(prevId).classList.replace("hidden-left","visible");
+    if (prevId === "step-role") {
+      document.getElementById("left-panel").className = "left-panel";
+      document.getElementById("left-role-badge").classList.remove("visible");
+      currentRole = null;
+    }
+  }
+
+  // ── Role meta ──
+  const ROLE = {
+    student: {
+      icon:"🎓", label:"Student",
+      bannerClass:"student", bannerTitle:"Student Access",
+      bannerDesc:"Sign in to your student account or create a new one.",
+      pillText:"🎓 Student", pillClass:"student", btnClass:"btn-student"
+    },
+    admin: {
+      icon:"🛡️", label:"Admin",
+      bannerClass:"admin", bannerTitle:"Admin Access",
+      bannerDesc:"Sign in to your admin account or register a new admin.",
+      pillText:"🛡️ Admin", pillClass:"admin", btnClass:"btn-admin"
+    }
+  };
+
+  // ── Step 1: role picked ──
+  function selectRole(role) {
+    currentRole = role;
+    const m = ROLE[role];
+
+    // Tint left panel
+    document.getElementById("left-panel").className = `left-panel role-${role}`;
+    const badge = document.getElementById("left-role-badge");
+    badge.classList.add("visible");
+    document.getElementById("left-badge-icon").textContent  = m.icon;
+    document.getElementById("left-badge-label").textContent = m.label;
+
+    // Populate step 2 banner
+    const banner = document.getElementById("action-banner");
+    banner.className = `role-banner ${m.bannerClass}`;
+    document.getElementById("action-banner-icon").textContent  = m.icon;
+    document.getElementById("action-banner-title").textContent = m.bannerTitle;
+    document.getElementById("action-banner-desc").textContent  = m.bannerDesc;
+
+    goTo("step-action","step-role");
+  }
+
+  // ── Step 2: action picked ──
+  function selectAction(action) {
+    currentAction = action;
+    const m = ROLE[currentRole];
+
+    // Role pill
+    const pill = document.getElementById("form-role-pill");
+    pill.className   = `role-pill ${m.pillClass}`;
+    pill.textContent = m.pillText;
+
+    // Show correct form
+    const loginForm  = document.getElementById("form-login");
+    const signupForm = document.getElementById("form-signup");
+
+    if (action === "signin") {
+      loginForm.style.display  = "block";
+      signupForm.style.display = "none";
+      document.getElementById("form-heading").textContent =
+        currentRole === "admin" ? "Admin Sign In 🛡️" : "Welcome back 👋";
+      document.getElementById("form-sub").textContent =
+        `Sign in to your ${m.label.toLowerCase()} account.`;
+    } else {
+      loginForm.style.display  = "none";
+      signupForm.style.display = "block";
+      document.getElementById("form-heading").textContent = `Create ${m.label} Account ✨`;
+      document.getElementById("form-sub").textContent     = `Register a new ${m.label.toLowerCase()} account.`;
+    }
+
+    // Button + input focus colour
+    document.getElementById("btn-login").className  = `btn-primary ${m.btnClass}`;
+    document.getElementById("btn-signup").className = `btn-primary ${m.btnClass}`;
+    document.getElementById("step-form").className  =
+      `step hidden-right${currentRole === "admin" ? " admin-form" : ""}`;
+
+    goTo("step-form","step-action");
+  }
+
+  // ── Password toggle ──
+  function togglePwd(id, btn) {
+    const el = document.getElementById(id);
+    el.type     = el.type === "password" ? "text" : "password";
+    btn.textContent = el.type === "password" ? "👁" : "🙈";
+  }
+
+  // ── LOGIN ──
+  function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById("l-email").value.trim();
+    const pwd   = document.getElementById("l-password").value;
+    const errEl = document.getElementById("login-error");
+    errEl.classList.remove("show");
+
+    if (!email || !pwd) { showErr(errEl,"Please fill in all fields."); return; }
+
+    const res = login(email, pwd);
+    if (!res.ok) { showErr(errEl, res.msg); return; }
+
+    // Enforce role match — prevent student logging in via Admin portal
+    if (currentRole && res.user.role !== currentRole) {
+      const correct = res.user.role === "admin" ? "Admin" : "Student";
+      showErr(errEl, `This is a ${correct} account. Please go back and select ${correct} login.`);
+      return;
+    }
+    window.location.href = res.user.role === "admin" ? "admin.html" : "dashboard.html";
+  }
+
+  // ── SIGNUP ──
+  function handleSignup(e) {
+    e.preventDefault();
+    const name  = document.getElementById("s-name").value.trim();
+    const email = document.getElementById("s-email").value.trim();
+    const pwd   = document.getElementById("s-password").value;
+    const errEl = document.getElementById("signup-error");
+    errEl.classList.remove("show");
+
+    if (!name || !email || !pwd) { showErr(errEl,"Please fill in all fields."); return; }
+    if (pwd.length < 6)          { showErr(errEl,"Password must be at least 6 characters."); return; }
+    if (!email.includes("@"))    { showErr(errEl,"Please enter a valid email."); return; }
+
+    const res = signup(name, email, pwd, currentRole || "student");
+    if (!res.ok) { showErr(errEl, res.msg); return; }
+    window.location.href = res.user.role === "admin" ? "admin.html" : "dashboard.html";
+  }
+
+  function showErr(el, msg) {
+    el.textContent = msg;
+    el.classList.add("show");
+  }
+</script>
+</body>
+</html>
